@@ -92,73 +92,57 @@ button {
     <img id="fist-right" class="fist" src="fist_right.png" alt="Right Fist">
 </div>
 <div id="gift">
-    <h2>🎁 I hope you feel better now! Here, you won an avocado 🥑🥑 </h2>
+    <h2>🎁 I hope you feel better now! Here, you won two avocados 🥑🥑 </h2>
     <p>If not, try again 💪</p>
     <button id="try-again">Try Again</button>
 </div>
-
+<audio id="punch-sound" src="punch.mp3" preload="auto"></audio>
+    
 <script>
     let score = 0;
-    let target = getRandomTarget();
-    const scoreEl = document.getElementById('score');
-    const sandbag = document.getElementById('sandbag');
-    const fistLeft = document.getElementById('fist-left');
-    const fistRight = document.getElementById('fist-right');
-    const punchArea = document.getElementById('punch-area');
-    const gift = document.getElementById('gift');
-    const tryAgainBtn = document.getElementById('try-again');
+    let targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30; // Random 30–70
+    const sandbag = document.getElementById("sandbag");
+    const punchSound = document.getElementById("punch-sound");
 
-    updateScore();
-
-    punchArea.addEventListener('click', (e) => {
-        if (gift.style.display === 'block') return;
-
-        const rect = punchArea.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-
-        if (clickX < rect.width / 2) {
-            showFist(fistLeft);
-        } else {
-            showFist(fistRight);
-        }
-
-        shakeSandbag();
-        score++;
-        updateScore();
-
-        if (score >= target) {
-            gift.style.display = 'block';
-        }
-    });
-
-    tryAgainBtn.addEventListener('click', () => {
-        score = 0;
-        target = getRandomTarget();
-        updateScore();
-        gift.style.display = 'none';
-    });
-
-    function updateScore() {
-        scoreEl.textContent = `Punches: ${score}`;
-    }
-
-    function getRandomTarget() {
-        return Math.floor(Math.random() * (70 - 30 + 1)) + 30;
-    }
-
-    function shakeSandbag() {
-        sandbag.style.transform = 'translateX(-10px)';
-        setTimeout(() => sandbag.style.transform = 'translateX(10px)', 50);
-        setTimeout(() => sandbag.style.transform = 'translateX(0)', 100);
-    }
-
-    function showFist(fist) {
+    function punch(side) {
+        const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
         fist.style.display = 'block';
+
+        // Play punch sound
+        punchSound.currentTime = 0;
+        punchSound.play();
+
+        sandbag.classList.add("shake");
         setTimeout(() => {
             fist.style.display = 'none';
+            sandbag.classList.remove("shake");
         }, 150);
-    }
-</script>
 
+        score++;
+        if (score >= targetScore) {
+            showGift();
+        }
+    }
+
+    function showGift() {
+        document.getElementById("gift").style.display = "block";
+    }
+
+    function restartGame() {
+        score = 0;
+        targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
+        document.getElementById("gift").style.display = "none";
+    }
+
+    sandbag.addEventListener("click", function(event) {
+        const rect = sandbag.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        if (clickX < rect.width / 2) {
+            punch("left");
+        } else {
+            punch("right");
+        }
+    });
+</script>
 </body>
 </html>
