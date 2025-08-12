@@ -14,16 +14,12 @@
     height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
-    padding-bottom: 2rem;  /* added for space below */
-    overflow-y: auto;      /* allow vertical scroll */
+    padding-bottom: 2rem;
+    overflow-y: auto;
   }
   h1 {
     font-size: clamp(18px, 4vw, 28px);
     margin-bottom: 0.5rem;
-  }
-  #score {
-    font-size: clamp(16px, 3vw, 24px);
-    margin-bottom: 1rem;
   }
   .container {
     position: relative;
@@ -39,10 +35,12 @@
     height: auto;
     transition: transform 0.1s;
     cursor: pointer;
-    outline: none; /* remove default focus outline */
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
   }
   #sandbag:focus {
     outline: none;
+    box-shadow: none;
   }
   .fist {
     position: absolute;
@@ -96,7 +94,7 @@
 <body>
 
 <h1>Punch the Sandbag!</h1>
-<div id="score">Punches: 0</div>
+
 <div class="container" id="punch-area">
   <img id="sandbag" src="sandbag.png" alt="Sandbag" tabindex="0" />
   <img id="fist-left" class="fist" src="fist_left.png" alt="Left Fist" />
@@ -114,7 +112,6 @@
   const punchSound = document.getElementById("punch-sound");
   const sandbag = document.getElementById("sandbag");
   const gift = document.getElementById("gift");
-  const scoreEl = document.getElementById("score");
   const tryAgainBtn = document.getElementById("try-again");
   const finalScoreEl = document.getElementById("final-score");
   let score = 0;
@@ -135,10 +132,6 @@
     }
   });
 
-  function updateScore() {
-    scoreEl.textContent = `Punches: ${score}`;
-  }
-
   function punch(side) {
     if (!gameStarted || gameOver) return;
     const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
@@ -154,14 +147,12 @@
     }, 300);
 
     score++;
-    updateScore();
   }
 
   function startGame() {
     if (gameStarted) return;
     gameStarted = true;
     score = 0;
-    updateScore();
     gift.style.display = "none";
     gameOver = false;
 
@@ -176,10 +167,9 @@
   function restartGame() {
     clearTimeout(timerId);
     score = 0;
-    updateScore();
     gift.style.display = "none";
     gameOver = false;
-    gameStarted = true;  // auto start again after restart
+    gameStarted = true;
 
     timerId = setTimeout(() => {
       gameOver = true;
@@ -202,10 +192,7 @@
 
   tryAgainBtn.addEventListener("click", restartGame);
 
-  // Start game automatically on page load
   window.addEventListener('load', startGame);
-
-  updateScore();
 </script>
 </body>
 </html>
