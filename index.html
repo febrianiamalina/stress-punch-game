@@ -5,86 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Punch Stress Release - Timed</title>
 <style>
-    body {
-        background-color: #f2f2f2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-        font-family: Arial, sans-serif;
-        overflow: hidden;
-    }
-    h1 {
-        font-size: clamp(18px, 4vw, 28px);
-        margin-bottom: 0.5rem;
-    }
-    #score {
-        font-size: clamp(16px, 3vw, 24px);
-        margin-bottom: 1rem;
-    }
-    .container {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 60vw;
-        max-width: 250px;
-        aspect-ratio: 1 / 2;
-    }
-    #sandbag {
-        width: 100%;
-        height: auto;
-        transition: transform 0.1s;
-        cursor: pointer;
-    }
-    .fist {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 35%;
-        max-width: 100px;
-        display: none;
-        z-index: 5;
-    }
-    #fist-left {
-        left: 20%;
-        transform: translateY(-50%) rotate(-20deg);
-    }
-    #fist-right {
-        right: 20%;
-        transform: translateY(-50%) rotate(20deg);
-    }
-    #gift {
-        display: none;
-        text-align: center;
-        margin-top: 0.05rem;
-    }
-    #gift h2 {
-        font-size: clamp(18px, 4vw, 26px);
-        margin: 0;
-    }
-    #gift p {
-        font-size: clamp(14px, 3vw, 20px);
-        margin-top: 0.5rem;
-    }
-    button {
-        margin-top: 0.3rem;
-        padding: 0.5rem 1rem;
-        font-size: clamp(14px, 3vw, 18px);
-        cursor: pointer;
-    }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(10px); }
-      50% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
-      100% { transform: translateX(0); }
-    }
-    .shake {
-      animation: shake 0.3s ease;
-    }
+  body {
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding-bottom: 2rem;  /* added for space below */
+    overflow-y: auto;      /* allow vertical scroll */
+  }
+  h1 {
+    font-size: clamp(18px, 4vw, 28px);
+    margin-bottom: 0.5rem;
+  }
+  #score {
+    font-size: clamp(16px, 3vw, 24px);
+    margin-bottom: 1rem;
+  }
+  .container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60vw;
+    max-width: 250px;
+    aspect-ratio: 1 / 2;
+  }
+  #sandbag {
+    width: 100%;
+    height: auto;
+    transition: transform 0.1s;
+    cursor: pointer;
+    outline: none; /* remove default focus outline */
+  }
+  #sandbag:focus {
+    outline: none;
+  }
+  .fist {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35%;
+    max-width: 100px;
+    display: none;
+    z-index: 5;
+  }
+  #fist-left {
+    left: 20%;
+    transform: translateY(-50%) rotate(-20deg);
+  }
+  #fist-right {
+    right: 20%;
+    transform: translateY(-50%) rotate(20deg);
+  }
+  #gift {
+    display: none;
+    text-align: center;
+    margin-top: 0;
+    padding-bottom: 1rem;
+  }
+  #gift h2 {
+    font-size: clamp(18px, 4vw, 26px);
+    margin: 0;
+  }
+  #gift p {
+    font-size: clamp(14px, 3vw, 20px);
+    margin-top: 0.5rem;
+  }
+  button {
+    margin-top: 0.3rem;
+    padding: 0.5rem 1rem;
+    font-size: clamp(14px, 3vw, 18px);
+    cursor: pointer;
+  }
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(10px); }
+    50% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+  }
+  .shake {
+    animation: shake 0.3s ease;
+  }
 </style>
 </head>
 <body>
@@ -92,107 +98,114 @@
 <h1>Punch the Sandbag!</h1>
 <div id="score">Punches: 0</div>
 <div class="container" id="punch-area">
-    <img id="sandbag" src="sandbag.png" alt="Sandbag" />
-    <img id="fist-left" class="fist" src="fist_left.png" alt="Left Fist" />
-    <img id="fist-right" class="fist" src="fist_right.png" alt="Right Fist" />
+  <img id="sandbag" src="sandbag.png" alt="Sandbag" tabindex="0" />
+  <img id="fist-left" class="fist" src="fist_left.png" alt="Left Fist" />
+  <img id="fist-right" class="fist" src="fist_right.png" alt="Right Fist" />
 </div>
 <div id="gift">
-    <h2>Bravoo! Your score is: <span id="final-score">0</span></h2>
-    <h2>🎁 I hope you feel better now! Here, you won two avocados 🥑🥑 </h2>
-    <p>If not, try again 💪</p>
-    <button id="try-again">Try Again</button>
+  <h2>Bravoo! Your score is: <span id="final-score">0</span></h2>
+  <h2>🎁 I hope you feel better now! Here, you won two avocados 🥑🥑 </h2>
+  <p>If not, try again 💪</p>
+  <button id="try-again">Try Again</button>
 </div>
 <audio id="punch-sound" src="punch.mp3" preload="auto"></audio>
 
 <script>
-    const punchSound = document.getElementById("punch-sound");
-    const sandbag = document.getElementById("sandbag");
-    const gift = document.getElementById("gift");
-    const scoreEl = document.getElementById("score");
-    const tryAgainBtn = document.getElementById("try-again");
-    const finalScoreEl = document.getElementById("final-score");
-    let score = 0;
-    let gameStarted = false;
-    let gameOver = false;
-    let soundUnlocked = false;
-    let timerId = null;
-    const gameDuration = 30 * 1000; // 30 seconds
+  const punchSound = document.getElementById("punch-sound");
+  const sandbag = document.getElementById("sandbag");
+  const gift = document.getElementById("gift");
+  const scoreEl = document.getElementById("score");
+  const tryAgainBtn = document.getElementById("try-again");
+  const finalScoreEl = document.getElementById("final-score");
+  let score = 0;
+  let gameStarted = false;
+  let gameOver = false;
+  let soundUnlocked = false;
+  let timerId = null;
+  const gameDuration = 30 * 1000; // 30 seconds
 
-    // Unlock sound on first user interaction
-    document.body.addEventListener('pointerdown', function unlockSound(e) {
-      if (!soundUnlocked) {
-        punchSound.play().then(() => {
-          punchSound.pause();
-          punchSound.currentTime = 0;
-        }).catch(() => {});
-        soundUnlocked = true;
-      }
-    });
-
-    function updateScore() {
-        scoreEl.textContent = `Punches: ${score}`;
-    }
-
-    function punch(side) {
-        if (!gameStarted || gameOver) return;
-        const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
-        fist.style.display = 'block';
-
+  // Unlock sound on first user interaction
+  document.body.addEventListener('pointerdown', function unlockSound(e) {
+    if (!soundUnlocked) {
+      punchSound.play().then(() => {
+        punchSound.pause();
         punchSound.currentTime = 0;
-        punchSound.play().catch(() => {});
-
-        sandbag.classList.add("shake");
-        setTimeout(() => {
-            fist.style.display = 'none';
-            sandbag.classList.remove("shake");
-        }, 300);
-
-        score++;
-        updateScore();
+      }).catch(() => {});
+      soundUnlocked = true;
     }
+  });
 
-    function startGame() {
-        if (gameStarted) return;
-        gameStarted = true;
-        score = 0;
-        updateScore();
-        gift.style.display = "none";
-        gameOver = false;
+  function updateScore() {
+    scoreEl.textContent = `Punches: ${score}`;
+  }
 
-        timerId = setTimeout(() => {
-            gameOver = true;
-            gameStarted = false;
-            finalScoreEl.textContent = score;
-            gift.style.display = "block";
-        }, gameDuration);
-    }
+  function punch(side) {
+    if (!gameStarted || gameOver) return;
+    const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
+    fist.style.display = 'block';
 
-    function restartGame() {
-        clearTimeout(timerId);
-        score = 0;
-        updateScore();
-        gift.style.display = "none";
-        gameOver = false;
-        gameStarted = false;
-    }
+    punchSound.currentTime = 0;
+    punchSound.play().catch(() => {});
 
-    sandbag.addEventListener("click", function(event) {
-        if (!gameStarted) {
-            startGame();
-        }
-        if (gameOver) return;
-        const rect = sandbag.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        if (clickX < rect.width / 2) {
-            punch("left");
-        } else {
-            punch("right");
-        }
-    });
+    sandbag.classList.add("shake");
+    setTimeout(() => {
+      fist.style.display = 'none';
+      sandbag.classList.remove("shake");
+    }, 300);
 
-    tryAgainBtn.addEventListener("click", restartGame);
-
+    score++;
     updateScore();
+  }
+
+  function startGame() {
+    if (gameStarted) return;
+    gameStarted = true;
+    score = 0;
+    updateScore();
+    gift.style.display = "none";
+    gameOver = false;
+
+    timerId = setTimeout(() => {
+      gameOver = true;
+      gameStarted = false;
+      finalScoreEl.textContent = score;
+      gift.style.display = "block";
+    }, gameDuration);
+  }
+
+  function restartGame() {
+    clearTimeout(timerId);
+    score = 0;
+    updateScore();
+    gift.style.display = "none";
+    gameOver = false;
+    gameStarted = true;  // auto start again after restart
+
+    timerId = setTimeout(() => {
+      gameOver = true;
+      gameStarted = false;
+      finalScoreEl.textContent = score;
+      gift.style.display = "block";
+    }, gameDuration);
+  }
+
+  sandbag.addEventListener("click", function(event) {
+    if (!gameStarted || gameOver) return;
+    const rect = sandbag.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    if (clickX < rect.width / 2) {
+      punch("left");
+    } else {
+      punch("right");
+    }
+  });
+
+  tryAgainBtn.addEventListener("click", restartGame);
+
+  // Start game automatically on page load
+  window.addEventListener('load', startGame);
+
+  updateScore();
 </script>
 </body>
 </html>
