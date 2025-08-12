@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Stress Relief Punch</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #ffe0e0, #fff5f5);
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    margin-top: 20px;
+    color: #d9534f;
+  }
+
+  p {
+    font-size: 18px;
+  }
+
+  #counter {
+    font-weight: bold;
+    color: #c9302c;
+  }
+
+  /* Punch button */
+  #punch-btn {
+    margin-top: 20px;
+    padding: 20px 40px;
+    font-size: 24px;
+    background: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    box-shadow: 0 4px 0 #b52b27;
+  }
+
+  #punch-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 0 #b52b27;
+  }
+
+  /* Sandbag */
+  #sandbag {
+    margin-top: 30px;
+    font-size: 100px;
+    display: inline-block;
+    transition: transform 0.1s ease;
+  }
+
+  /* Shake animation */
+  @keyframes shake {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-5px, 0); }
+    50% { transform: translate(5px, 0); }
+    75% { transform: translate(-5px, 0); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* Fist animation */
+  #fist {
+    font-size: 80px;
+    display: none;
+    margin-top: 20px;
+    animation: punchAnim 0.3s ease forwards;
+  }
+
+  @keyframes punchAnim {
+    0% { transform: translateX(0) scale(1); opacity: 1; }
+    50% { transform: translateX(50px) scale(1.2); opacity: 1; }
+    100% { transform: translateX(0) scale(1); opacity: 0; }
+  }
+
+  /* Gift screen */
+  #gift-screen {
+    display: none;
+    margin-top: 50px;
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  #gift-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  #retry-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    background: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  #retry-btn:hover {
+    background: #4cae4c;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+</style>
+</head>
+<body>
+
+<h1>Stress Relief Punch</h1>
+<p>Punch count: <span id="counter">0</span></p>
+
+<!-- Sandbag -->
+<div id="sandbag">🥊</div>
+
+<!-- Fist animation -->
+<div id="fist">👊</div>
+
+<!-- Punch button -->
+<br>
+<button id="punch-btn">👊 Punch!</button>
+
+<!-- Gift screen -->
+<div id="gift-screen">
+  <div id="gift-card">
+    <h2>🎁 I hope you feel better</h2>
+    <p>If not, try again 💪</p>
+    <button id="retry-btn">Try Again</button>
+  </div>
+</div>
+
+<!-- Sound effect -->
+<audio id="punch-sound" src="https://actions.google.com/sounds/v1/impacts/punch_face.ogg" preload="auto"></audio>
+
+<script>
+let counter = 0;
+let goal = getRandomGoal();
+const counterDisplay = document.getElementById("counter");
+const punchBtn = document.getElementById("punch-btn");
+const fist = document.getElementById("fist");
+const sandbag = document.getElementById("sandbag");
+const giftScreen = document.getElementById("gift-screen");
+const retryBtn = document.getElementById("retry-btn");
+const punchSound = document.getElementById("punch-sound");
+
+function getRandomGoal() {
+  return Math.floor(Math.random() * (70 - 30 + 1)) + 30;
+}
+
+punchBtn.addEventListener("click", () => {
+  counter++;
+  counterDisplay.textContent = counter;
+
+  // Play punch sound
+  punchSound.currentTime = 0;
+  punchSound.play();
+
+  // Animate fist
+  fist.style.display = "block";
+  fist.style.animation = "none"; 
+  void fist.offsetWidth; 
+  fist.style.animation = "punchAnim 0.3s ease forwards";
+
+  // Shake sandbag
+  sandbag.style.animation = "shake 0.3s ease";
+  setTimeout(() => {
+    sandbag.style.animation = "none";
+  }, 300);
+
+  // Hide fist after animation
+  setTimeout(() => {
+    fist.style.display = "none";
+  }, 300);
+
+  // Goal reached
+  if (counter >= goal) {
+    punchBtn.style.display = "none";
+    giftScreen.style.display = "block";
+  }
+});
+
+retryBtn.addEventListener("click", () => {
+  counter = 0;
+  goal = getRandomGoal();
+  counterDisplay.textContent = counter;
+  punchBtn.style.display = "inline-block";
+  giftScreen.style.display = "none";
+});
+</script>
+
+</body>
+</html>
