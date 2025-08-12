@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Punch Stress Release</title>
 <style>
     body {
@@ -29,7 +29,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 60vw; /* smaller sandbag area */
+        width: 60vw;
         max-width: 250px;
         aspect-ratio: 1 / 2;
     }
@@ -39,47 +39,41 @@
         transition: transform 0.1s;
     }
     .fist {
-    position: absolute;
-    top: 50%; /* place fist vertically centered */
-    transform: translateY(-50%);
-    width: 35%;
-    max-width: 100px;
-    display: none;
-    z-index: 5;
-}
-
-#fist-left {
-    left: 20%; /* closer to sandbag from left */
-    transform: translateY(-50%) rotate(-20deg);
-}
-
-#fist-right {
-    right: 20%; /* closer to sandbag from right */
-    transform: translateY(-50%) rotate(20deg);
-}
-
-#gift {
-    display: none;
-    text-align: center;
-    margin-top: 0.5rem;
-}
-
-#gift h2 {
-    font-size: clamp(18px, 4vw, 26px);
-    margin: 0;
-}
-
-#gift p {
-    font-size: clamp(14px, 3vw, 20px);
-    margin-top: 0.5rem;
-}
-
-button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    font-size: clamp(14px, 3vw, 18px);
-    cursor: pointer;
-}
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 35%;
+        max-width: 100px;
+        display: none;
+        z-index: 5;
+    }
+    #fist-left {
+        left: 20%;
+        transform: translateY(-50%) rotate(-20deg);
+    }
+    #fist-right {
+        right: 20%;
+        transform: translateY(-50%) rotate(20deg);
+    }
+    #gift {
+        display: none;
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+    #gift h2 {
+        font-size: clamp(18px, 4vw, 26px);
+        margin: 0;
+    }
+    #gift p {
+        font-size: clamp(14px, 3vw, 20px);
+        margin-top: 0.5rem;
+    }
+    button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: clamp(14px, 3vw, 18px);
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
@@ -87,9 +81,9 @@ button {
 <h1>Punch the Sandbag!</h1>
 <div id="score">Punches: 0</div>
 <div class="container" id="punch-area">
-    <img id="sandbag" src="sandbag.png" alt="Sandbag">
-    <img id="fist-left" class="fist" src="fist_left.png" alt="Left Fist">
-    <img id="fist-right" class="fist" src="fist_right.png" alt="Right Fist">
+    <img id="sandbag" src="sandbag.png" alt="Sandbag" />
+    <img id="fist-left" class="fist" src="fist_left.png" alt="Left Fist" />
+    <img id="fist-right" class="fist" src="fist_right.png" alt="Right Fist" />
 </div>
 <div id="gift">
     <h2>🎁 I hope you feel better now! Here, you won two avocados 🥑🥑 </h2>
@@ -97,20 +91,27 @@ button {
     <button id="try-again">Try Again</button>
 </div>
 <audio id="punch-sound" src="punch.mp3" preload="auto"></audio>
-    
+
 <script>
     let score = 0;
     let targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30; // Random 30–70
     const sandbag = document.getElementById("sandbag");
     const punchSound = document.getElementById("punch-sound");
+    const scoreEl = document.getElementById("score");
+    const gift = document.getElementById("gift");
+    const tryAgainBtn = document.getElementById("try-again");
+
+    function updateScore() {
+        scoreEl.textContent = `Punches: ${score}`;
+    }
 
     function punch(side) {
         const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
         fist.style.display = 'block';
 
-        // Play punch sound
+        // Play punch sound safely
         punchSound.currentTime = 0;
-        punchSound.play();
+        punchSound.play().catch(e => { /* ignore play errors */ });
 
         sandbag.classList.add("shake");
         setTimeout(() => {
@@ -119,19 +120,22 @@ button {
         }, 150);
 
         score++;
+        updateScore();
+
         if (score >= targetScore) {
             showGift();
         }
     }
 
     function showGift() {
-        document.getElementById("gift").style.display = "block";
+        gift.style.display = "block";
     }
 
     function restartGame() {
         score = 0;
         targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
-        document.getElementById("gift").style.display = "none";
+        gift.style.display = "none";
+        updateScore();
     }
 
     sandbag.addEventListener("click", function(event) {
@@ -143,6 +147,10 @@ button {
             punch("right");
         }
     });
+
+    tryAgainBtn.addEventListener("click", restartGame);
+
+    updateScore(); // initialize display
 </script>
 </body>
 </html>
