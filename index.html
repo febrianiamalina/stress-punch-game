@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Punch Stress Release</title>
+<title>Punch Stress Release - Timed</title>
 <style>
     body {
         background-color: #f2f2f2;
@@ -37,6 +37,7 @@
         width: 100%;
         height: auto;
         transition: transform 0.1s;
+        cursor: pointer;
     }
     .fist {
         position: absolute;
@@ -58,7 +59,7 @@
     #gift {
         display: none;
         text-align: center;
-        margin-top: 0.05rem;  /* smaller margin */
+        margin-top: 0.05rem;
     }
     #gift h2 {
         font-size: clamp(18px, 4vw, 26px);
@@ -69,13 +70,11 @@
         margin-top: 0.5rem;
     }
     button {
-        margin-top: 0.5rem;
+        margin-top: 0.3rem;
         padding: 0.5rem 1rem;
         font-size: clamp(14px, 3vw, 18px);
         cursor: pointer;
     }
-
-    /* Add shake animation back */
     @keyframes shake {
       0% { transform: translateX(0); }
       25% { transform: translateX(10px); }
@@ -98,6 +97,7 @@
     <img id="fist-right" class="fist" src="fist_right.png" alt="Right Fist" />
 </div>
 <div id="gift">
+    <h2>Bravoo! Your score is: <span id="final-score">0</span></h2>
     <h2>🎁 I hope you feel better now! Here, you won two avocados 🥑🥑 </h2>
     <p>If not, try again 💪</p>
     <button id="try-again">Try Again</button>
@@ -110,12 +110,15 @@
     const gift = document.getElementById("gift");
     const scoreEl = document.getElementById("score");
     const tryAgainBtn = document.getElementById("try-again");
+    const finalScoreEl = document.getElementById("final-score");
     let score = 0;
-    let targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
+    let gameStarted = false;
     let gameOver = false;
     let soundUnlocked = false;
+    let timerId = null;
+    const gameDuration = 30 * 1000; // 30 seconds
 
-    // Unlock sound on first user interaction, without volume changes
+    // Unlock sound on first user interaction
     document.body.addEventListener('pointerdown', function unlockSound(e) {
       if (!soundUnlocked) {
         punchSound.play().then(() => {
@@ -131,7 +134,7 @@
     }
 
     function punch(side) {
-        if (gameOver) return;
+        if (!gameStarted || gameOver) return;
         const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
         fist.style.display = 'block';
 
@@ -146,22 +149,37 @@
 
         score++;
         updateScore();
+    }
 
-        if (score >= targetScore) {
+    function startGame() {
+        if (gameStarted) return;
+        gameStarted = true;
+        score = 0;
+        updateScore();
+        gift.style.display = "none";
+        gameOver = false;
+
+        timerId = setTimeout(() => {
             gameOver = true;
+            gameStarted = false;
+            finalScoreEl.textContent = score;
             gift.style.display = "block";
-        }
+        }, gameDuration);
     }
 
     function restartGame() {
+        clearTimeout(timerId);
         score = 0;
-        targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
-        gift.style.display = "none";
         updateScore();
+        gift.style.display = "none";
         gameOver = false;
+        gameStarted = false;
     }
 
     sandbag.addEventListener("click", function(event) {
+        if (!gameStarted) {
+            startGame();
+        }
         if (gameOver) return;
         const rect = sandbag.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
