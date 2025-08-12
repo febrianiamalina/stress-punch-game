@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Punch Stress Release</title>
 <style>
-    /* your existing styles */
     body {
         background-color: #f2f2f2;
         display: flex;
@@ -59,7 +58,9 @@
     #gift {
         display: none;
         text-align: center;
-        margin-top: 0.5rem;
+        margin-top: 0.2rem;
+        position: relative;
+        top: -10px;
     }
     #gift h2 {
         font-size: clamp(18px, 4vw, 26px);
@@ -102,11 +103,19 @@
     let score = 0;
     let targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
     let gameOver = false;
+    let soundUnlocked = false;
 
-    // Unlock sound on first user interaction to reduce delay
-    document.body.addEventListener('pointerdown', function unlockSound() {
-      punchSound.play().then(() => punchSound.pause());
-      document.body.removeEventListener('pointerdown', unlockSound);
+    // Unlock sound on first user interaction
+    document.body.addEventListener('pointerdown', function unlockSound(e) {
+      if (!soundUnlocked) {
+        punchSound.volume = 0;
+        punchSound.play().then(() => {
+          punchSound.pause();
+          punchSound.currentTime = 0;
+          punchSound.volume = 1;
+        }).catch(() => {});
+        soundUnlocked = true;
+      }
     });
 
     function updateScore() {
@@ -114,13 +123,12 @@
     }
 
     function punch(side) {
-        if(gameOver) return;
-        console.log("Punch!", side, "Score before:", score);
+        if (gameOver) return;
         const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
         fist.style.display = 'block';
 
         punchSound.currentTime = 0;
-        punchSound.play().catch(e => {});
+        punchSound.play().catch(() => {});
 
         sandbag.classList.add("shake");
         setTimeout(() => {
@@ -130,16 +138,11 @@
 
         score++;
         updateScore();
-        console.log("Score after:", score);
 
         if (score >= targetScore) {
             gameOver = true;
-            showGift();
+            gift.style.display = "block";
         }
-    }
-
-    function showGift() {
-        gift.style.display = "block";
     }
 
     function restartGame() {
@@ -151,6 +154,7 @@
     }
 
     sandbag.addEventListener("click", function(event) {
+        if(gameOver) return;
         const rect = sandbag.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
         if (clickX < rect.width / 2) {
