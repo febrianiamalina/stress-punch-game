@@ -21,6 +21,11 @@
     font-size: clamp(18px, 4vw, 28px);
     margin-bottom: 0.5rem;
   }
+  #timer {
+    font-size: clamp(16px, 3vw, 24px);
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
   .container {
     position: relative;
     display: flex;
@@ -94,6 +99,7 @@
 <body>
 
 <h1>Punch the Sandbag!</h1>
+<div id="timer">Time left: 30s</div>
 
 <div class="container" id="punch-area">
   <img id="sandbag" src="sandbag.png" alt="Sandbag" tabindex="0" />
@@ -114,12 +120,14 @@
   const gift = document.getElementById("gift");
   const tryAgainBtn = document.getElementById("try-again");
   const finalScoreEl = document.getElementById("final-score");
+  const timerEl = document.getElementById("timer");
   let score = 0;
   let gameStarted = false;
   let gameOver = false;
   let soundUnlocked = false;
   let timerId = null;
-  const gameDuration = 30 * 1000; // 30 seconds
+  let countdownInterval = null;
+  const gameDuration = 30; // in seconds
 
   // Unlock sound on first user interaction
   document.body.addEventListener('pointerdown', function unlockSound(e) {
@@ -131,6 +139,10 @@
       soundUnlocked = true;
     }
   });
+
+  function updateTimer(secondsLeft) {
+    timerEl.textContent = `Time left: ${secondsLeft}s`;
+  }
 
   function punch(side) {
     if (!gameStarted || gameOver) return;
@@ -155,28 +167,47 @@
     score = 0;
     gift.style.display = "none";
     gameOver = false;
+    updateTimer(gameDuration);
 
-    timerId = setTimeout(() => {
-      gameOver = true;
-      gameStarted = false;
-      finalScoreEl.textContent = score;
-      gift.style.display = "block";
-    }, gameDuration);
+    let timeLeft = gameDuration;
+
+    countdownInterval = setInterval(() => {
+      timeLeft--;
+      updateTimer(timeLeft);
+
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        endGame();
+      }
+    }, 1000);
+  }
+
+  function endGame() {
+    gameOver = true;
+    gameStarted = false;
+    finalScoreEl.textContent = score;
+    gift.style.display = "block";
   }
 
   function restartGame() {
-    clearTimeout(timerId);
+    clearInterval(countdownInterval);
     score = 0;
     gift.style.display = "none";
     gameOver = false;
     gameStarted = true;
+    updateTimer(gameDuration);
 
-    timerId = setTimeout(() => {
-      gameOver = true;
-      gameStarted = false;
-      finalScoreEl.textContent = score;
-      gift.style.display = "block";
-    }, gameDuration);
+    let timeLeft = gameDuration;
+
+    countdownInterval = setInterval(() => {
+      timeLeft--;
+      updateTimer(timeLeft);
+
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        endGame();
+      }
+    }, 1000);
   }
 
   sandbag.addEventListener("click", function(event) {
