@@ -1,126 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Stress Relief Punch</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: linear-gradient(135deg, #ffe0e0, #fff5f5);
-    margin: 0;
-    padding: 0;
-  }
-
-  h1 {
-    margin-top: 20px;
-    color: #d9534f;
-  }
-
-  p {
-    font-size: 18px;
-  }
-
-  #counter {
-    font-weight: bold;
-    color: #c9302c;
-  }
-
-  /* Punch button */
-  #punch-btn {
-    margin-top: 20px;
-    padding: 20px 40px;
-    font-size: 24px;
-    background: #d9534f;
-    color: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.1s ease;
-    box-shadow: 0 4px 0 #b52b27;
-  }
-
-  #punch-btn:active {
-    transform: scale(0.9);
-    box-shadow: 0 2px 0 #b52b27;
-  }
-
-  /* Sandbag */
-  #sandbag {
-    margin-top: 30px;
-    font-size: 100px;
-    display: inline-block;
-    transition: transform 0.1s ease;
-  }
-
-  /* Shake animation */
-  @keyframes shake {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(-5px, 0); }
-    50% { transform: translate(5px, 0); }
-    75% { transform: translate(-5px, 0); }
-    100% { transform: translate(0, 0); }
-  }
-
-  /* Fist animation */
-  #fist {
-    font-size: 80px;
-    display: none;
-    margin-top: 20px;
-    animation: punchAnim 0.3s ease forwards;
-  }
-
-  @keyframes punchAnim {
-    0% { transform: translateX(0) scale(1); opacity: 1; }
-    50% { transform: translateX(50px) scale(1.2); opacity: 1; }
-    100% { transform: translateX(0) scale(1); opacity: 0; }
-  }
-
-  /* Gift screen */
-  #gift-screen {
-    display: none;
-    margin-top: 50px;
-    animation: fadeIn 0.6s ease forwards;
-  }
-
-  #gift-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    display: inline-block;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-
-  #retry-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    background: #5cb85c;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-
-  #retry-btn:hover {
-    background: #4cae4c;
-  }
-
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Stress Punch Game 🥊</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    #sandbag {
+      transition: transform 0.1s;
+      cursor: pointer;
+    }
+    .shake {
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(5deg); }
+      50% { transform: rotate(-5deg); }
+      75% { transform: rotate(3deg); }
+      100% { transform: rotate(0deg); }
+    }
+    #gift {
+      margin-top: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <h1>Stress Punch Game 🥊</h1>
   <div>
-    <img id="sandbag" src="https://i.imgur.com/dj9Q1Ry.png" width="200">
+    <img id="sandbag" src="sandbag.png" width="200">
   </div>
   <p>Punches: <span id="counter">0</span></p>
 
-  <div id="gift" style="display:none;">
+  <div id="gift">
     <h2>🎁 I hope you feel better!</h2>
     <p>If not, try again.</p>
     <button id="tryAgain">Try Again</button>
@@ -133,12 +53,13 @@
     const sandbag = document.getElementById("sandbag");
     const tryAgain = document.getElementById("tryAgain");
 
-    // Punch when sandbag is clicked/tapped
     sandbag.addEventListener("click", () => {
       count++;
       counter.textContent = count;
-      sandbag.style.transform = "scale(0.95)";
-      setTimeout(() => sandbag.style.transform = "scale(1)", 100);
+      
+      // Shake animation
+      sandbag.classList.add("shake");
+      setTimeout(() => sandbag.classList.remove("shake"), 300);
 
       if (count >= 20) {
         gift.style.display = "block";
@@ -152,5 +73,4 @@
     });
   </script>
 </body>
-  
 </html>
