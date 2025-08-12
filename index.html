@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Punch Stress Release</title>
 <style>
+    /* your existing styles */
     body {
         background-color: #f2f2f2;
         display: flex;
@@ -93,25 +94,33 @@
 <audio id="punch-sound" src="punch.mp3" preload="auto"></audio>
 
 <script>
-    let score = 0;
-    let targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30; // Random 30–70
-    const sandbag = document.getElementById("sandbag");
     const punchSound = document.getElementById("punch-sound");
-    const scoreEl = document.getElementById("score");
+    const sandbag = document.getElementById("sandbag");
     const gift = document.getElementById("gift");
+    const scoreEl = document.getElementById("score");
     const tryAgainBtn = document.getElementById("try-again");
+    let score = 0;
+    let targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
+    let gameOver = false;
+
+    // Unlock sound on first user interaction to reduce delay
+    document.body.addEventListener('pointerdown', function unlockSound() {
+      punchSound.play().then(() => punchSound.pause());
+      document.body.removeEventListener('pointerdown', unlockSound);
+    });
 
     function updateScore() {
         scoreEl.textContent = `Punches: ${score}`;
     }
 
     function punch(side) {
+        if(gameOver) return;
+        console.log("Punch!", side, "Score before:", score);
         const fist = document.getElementById(side === 'left' ? 'fist-left' : 'fist-right');
         fist.style.display = 'block';
 
-        // Play punch sound safely
         punchSound.currentTime = 0;
-        punchSound.play().catch(e => { /* ignore play errors */ });
+        punchSound.play().catch(e => {});
 
         sandbag.classList.add("shake");
         setTimeout(() => {
@@ -121,8 +130,10 @@
 
         score++;
         updateScore();
+        console.log("Score after:", score);
 
         if (score >= targetScore) {
+            gameOver = true;
             showGift();
         }
     }
@@ -136,6 +147,7 @@
         targetScore = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
         gift.style.display = "none";
         updateScore();
+        gameOver = false;
     }
 
     sandbag.addEventListener("click", function(event) {
@@ -150,7 +162,7 @@
 
     tryAgainBtn.addEventListener("click", restartGame);
 
-    updateScore(); // initialize display
+    updateScore();
 </script>
 </body>
 </html>
