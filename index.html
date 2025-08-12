@@ -57,7 +57,14 @@
         display: none;
         text-align: center;
         margin-top: 1rem;
+    }
+    #gift h2 {
+        font-size: clamp(18px, 4vw, 26px);
+        margin: 0;
+    }
+    #gift p {
         font-size: clamp(14px, 3vw, 20px);
+        margin-top: 0.5rem;
     }
     button {
         margin-top: 1rem;
@@ -136,3 +143,14 @@
         setTimeout(() => sandbag.style.transform = 'translateX(10px)', 50);
         setTimeout(() => sandbag.style.transform = 'translateX(0)', 100);
     }
+
+    function showFist(fist) {
+        fist.style.display = 'block';
+        setTimeout(() => {
+            fist.style.display = 'none';
+        }, 150);
+    }
+</script>
+
+</body>
+</html>
