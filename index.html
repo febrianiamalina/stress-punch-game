@@ -1,76 +1,124 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Stress Punch Game 🥊</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-    }
-    #sandbag {
-      transition: transform 0.1s;
-      cursor: pointer;
-    }
-    .shake {
-      animation: shake 0.3s;
-    }
-    @keyframes shake {
-      0% { transform: rotate(0deg); }
-      25% { transform: rotate(5deg); }
-      50% { transform: rotate(-5deg); }
-      75% { transform: rotate(3deg); }
-      100% { transform: rotate(0deg); }
-    }
-    #gift {
-      margin-top: 20px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Stress Punch</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            position: relative;
+            width: 300px;
+            margin: 50px auto;
+        }
+        #sandbag {
+            width: 200px;
+            transition: transform 0.1s;
+        }
+        .shake {
+            animation: shake 0.2s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        #fistLeft, #fistRight {
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            transform: translateY(-50%);
+            display: none;
+        }
+        #fistLeft { left: 0; }
+        #fistRight { right: 0; }
+        #score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        #gift {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #gift button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Stress Punch Game 🥊</h1>
-  <div>
-    <img id="sandbag" src="sandbag.png" width="200">
-  </div>
-  <p>Punches: <span id="counter">0</span></p>
 
-  <div id="gift">
-    <h2>🎁 I hope you feel better!</h2>
-    <p>If not, try again.</p>
-    <button id="tryAgain">Try Again</button>
-  </div>
+    <h1>Stress Punch</h1>
+    <div id="container">
+        <img id="sandbag" src="sandbag.png" alt="Sandbag">
+        <img id="fistLeft" src="fist_left.png" alt="Fist Left">
+        <img id="fistRight" src="fist_right.png" alt="Fist Right">
+    </div>
+    <div id="score">Score: 0</div>
+    <div id="gift">
+        <h2>🎁 I hope you feel better!</h2>
+        <p>If not, try again 💪</p>
+        <button onclick="resetGame()">Try Again</button>
+    </div>
 
-  <script>
-    let count = 0;
-    const counter = document.getElementById("counter");
-    const gift = document.getElementById("gift");
-    const sandbag = document.getElementById("sandbag");
-    const tryAgain = document.getElementById("tryAgain");
+    <script>
+        let score = 0;
+        let targetScore = getRandomTarget();
+        const sandbag = document.getElementById('sandbag');
+        const fistLeft = document.getElementById('fistLeft');
+        const fistRight = document.getElementById('fistRight');
+        const scoreDisplay = document.getElementById('score');
+        const giftDisplay = document.getElementById('gift');
 
-    sandbag.addEventListener("click", () => {
-      count++;
-      counter.textContent = count;
-      
-      // Shake animation
-      sandbag.classList.add("shake");
-      setTimeout(() => sandbag.classList.remove("shake"), 300);
+        function getRandomTarget() {
+            return Math.floor(Math.random() * 10) + 5; // between 5 and 15 punches
+        }
 
-      if (count >= 20) {
-        gift.style.display = "block";
-      }
-    });
+        document.getElementById('container').addEventListener('click', function(e) {
+            const rect = sandbag.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
 
-    tryAgain.addEventListener("click", () => {
-      count = 0;
-      counter.textContent = count;
-      gift.style.display = "none";
-    });
-  </script>
+            // Left side punch
+            if (clickX < rect.width / 2) {
+                fistLeft.style.display = 'block';
+                setTimeout(() => fistLeft.style.display = 'none', 200);
+            } 
+            // Right side punch
+            else {
+                fistRight.style.display = 'block';
+                setTimeout(() => fistRight.style.display = 'none', 200);
+            }
+
+            // Shake sandbag
+            sandbag.classList.add('shake');
+            setTimeout(() => sandbag.classList.remove('shake'), 200);
+
+            // Increase score
+            score++;
+            scoreDisplay.textContent = `Score: ${score}`;
+
+            // Check for gift
+            if (score >= targetScore) {
+                giftDisplay.style.display = 'block';
+            }
+        });
+
+        function resetGame() {
+            score = 0;
+            targetScore = getRandomTarget();
+            scoreDisplay.textContent = `Score: ${score}`;
+            giftDisplay.style.display = 'none';
+        }
+    </script>
+
 </body>
 </html>
