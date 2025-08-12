@@ -114,87 +114,43 @@
 </style>
 </head>
 <body>
-
-<h1>Stress Relief Punch</h1>
-<p>Punch count: <span id="counter">0</span></p>
-
-<!-- Sandbag -->
-<div id="sandbag">🥊</div>
-
-<!-- Fist animation -->
-<div id="fist">👊</div>
-
-<!-- Punch button -->
-<br>
-<button id="punch-btn">👊 Punch!</button>
-
-<!-- Gift screen -->
-<div id="gift-screen">
-  <div id="gift-card">
-    <h2>🎁 I hope you feel better</h2>
-    <p>If not, try again 💪</p>
-    <button id="retry-btn">Try Again</button>
+  <h1>Stress Punch Game 🥊</h1>
+  <div>
+    <img id="sandbag" src="https://i.imgur.com/dj9Q1Ry.png" width="200">
   </div>
-</div>
+  <p>Punches: <span id="counter">0</span></p>
 
-<!-- Sound effect -->
-<audio id="punch-sound" src="https://actions.google.com/sounds/v1/impacts/punch_face.ogg" preload="auto"></audio>
+  <div id="gift" style="display:none;">
+    <h2>🎁 I hope you feel better!</h2>
+    <p>If not, try again.</p>
+    <button id="tryAgain">Try Again</button>
+  </div>
 
-<script>
-let counter = 0;
-let goal = getRandomGoal();
-const counterDisplay = document.getElementById("counter");
-const punchBtn = document.getElementById("punch-btn");
-const fist = document.getElementById("fist");
-const sandbag = document.getElementById("sandbag");
-const giftScreen = document.getElementById("gift-screen");
-const retryBtn = document.getElementById("retry-btn");
-const punchSound = document.getElementById("punch-sound");
+  <script>
+    let count = 0;
+    const counter = document.getElementById("counter");
+    const gift = document.getElementById("gift");
+    const sandbag = document.getElementById("sandbag");
+    const tryAgain = document.getElementById("tryAgain");
 
-function getRandomGoal() {
-  return Math.floor(Math.random() * (70 - 30 + 1)) + 30;
-}
+    // Punch when sandbag is clicked/tapped
+    sandbag.addEventListener("click", () => {
+      count++;
+      counter.textContent = count;
+      sandbag.style.transform = "scale(0.95)";
+      setTimeout(() => sandbag.style.transform = "scale(1)", 100);
 
-punchBtn.addEventListener("click", () => {
-  counter++;
-  counterDisplay.textContent = counter;
+      if (count >= 20) {
+        gift.style.display = "block";
+      }
+    });
 
-  // Play punch sound
-  punchSound.currentTime = 0;
-  punchSound.play();
-
-  // Animate fist
-  fist.style.display = "block";
-  fist.style.animation = "none"; 
-  void fist.offsetWidth; 
-  fist.style.animation = "punchAnim 0.3s ease forwards";
-
-  // Shake sandbag
-  sandbag.style.animation = "shake 0.3s ease";
-  setTimeout(() => {
-    sandbag.style.animation = "none";
-  }, 300);
-
-  // Hide fist after animation
-  setTimeout(() => {
-    fist.style.display = "none";
-  }, 300);
-
-  // Goal reached
-  if (counter >= goal) {
-    punchBtn.style.display = "none";
-    giftScreen.style.display = "block";
-  }
-});
-
-retryBtn.addEventListener("click", () => {
-  counter = 0;
-  goal = getRandomGoal();
-  counterDisplay.textContent = counter;
-  punchBtn.style.display = "inline-block";
-  giftScreen.style.display = "none";
-});
-</script>
-
+    tryAgain.addEventListener("click", () => {
+      count = 0;
+      counter.textContent = count;
+      gift.style.display = "none";
+    });
+  </script>
 </body>
+  
 </html>
